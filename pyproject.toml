@@ -1,0 +1,33 @@
+[project]
+name = "tweetrelay"
+version = "0.1.0"
+authors = [
+  { name="Timothy Bautista", email="acarasimon96@pm.me" },
+]
+description = "A framework for relaying Twitter streams via server-sent events"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  "starlette>=0.22.0<2",
+  "sse_starlette",
+  "tweepy[async]>=4.10<5",
+  "pydantic",
+  "pymitter",
+  "python-dotenv",
+]
+
+[tool.black]
+target-version = ['py37']
+extend-exclude = '/\.(v?env(.bak)?|ENV)'
+
+[tool.isort]
+profile = 'black'
+balanced_wrapping = true
+combine_star = true
+py_version = '3'
+skip_glob = ['env/*', 'venv/*', 'ENV/*']

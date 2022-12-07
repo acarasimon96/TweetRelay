@@ -1,0 +1,26 @@
+[flake8]
+# See the following links for complete listings of bundled error codes:
+# - https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
+# - https://flake8.pycqa.org/en/latest/user/error-codes.html
+extend-ignore =
+    # E128,
+    E203,E266,
+    E303,
+    E501,
+    W503,
+    D100,D101,D102,D103,D105,
+    D200,D202,D209,
+    N805,
+    TC002
+extend-select = W504,B950
+exclude = .git,__pycache__,env,venv,ENV
+max-line-length = 88
+
+# flake8-literal settings
+literal-inline-quotes = double
+literal-multiline-quotes = double
+literal-docstring-quotes = double
+
+# flake8-type-checking settings
+type-checking-exempt-modules = typing
+type-checking-fastapi-enabled = true

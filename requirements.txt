@@ -1,0 +1,6 @@
+pydantic
+pymitter
+python-dotenv
+starlette>=0.22<2
+sse_starlette
+tweepy[async]>=4.10<5
