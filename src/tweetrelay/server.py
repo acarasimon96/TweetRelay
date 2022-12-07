@@ -140,7 +140,7 @@ class TweetRelay(Starlette):
             if await request.is_disconnected():
                 _logger.debug("Connection from %s was disconnected", client_addr)
 
-    def stream(self, request: Request):
+    async def stream(self, request: Request):
         """
         The main endpoint for pushing server-sent events to a client
         """
