@@ -32,7 +32,7 @@ class SentEvent(NamedTuple):
 def make_sse(
     data: Optional[Any] = None,
     *,
-    id: Optional[Union[int, str]] = None,
+    id: Optional[int] = None,
     event: Optional[str] = None,
     retry: Optional[int] = None,
     comment: Optional[str] = None,
@@ -45,11 +45,11 @@ def make_sse(
     data : Any | None
         The data field for the message. Any datatype can be specified to this parameter,
         since the SSE instance converts them to a string before they are sent.
-    id: int | str | None
+    id: int | None
         The event ID to set the EventSource object's last event ID value to.
     event: str | None
         The event's type. If this is specified, an event will be dispatched on the
-        browser to the listener for the specified event name; a website would use
+        client to the listener for the specified event name; a website would use
         `addEventListener()` to listen for named events. The default event type
         is "message".
     retry: int | None
