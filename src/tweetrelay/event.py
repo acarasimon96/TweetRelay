@@ -97,7 +97,16 @@ class MessageAnnouncer:
                 self.listeners[i].put_nowait(sse)
             except asyncio.QueueFull:
                 del self.listeners[i]
-        _logger.debug("Pushed SSE data:\n%s", sse)
+        _logger.debug(
+            "Pushed SSE data:\n%s",
+            {
+                "id": sse.id,
+                "event": sse.event,
+                "data": sse.data,
+                "retry": sse.retry,
+                "comment": sse.comment,
+            },
+        )
         self.recent_events.append(SentEvent(now, sse))
 
     def clean_up_recent_events(self):
