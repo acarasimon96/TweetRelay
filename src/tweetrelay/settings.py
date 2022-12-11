@@ -4,6 +4,12 @@ from pydantic import BaseSettings, validator
 
 
 class Settings(BaseSettings):
+    """
+    Reads application settings from a file and stores them into an encapsulated object.
+    Currently, only reading from files named `.env` in the current working directory
+    is supported.
+    """
+
     bearer_token: str
     host: str = "127.0.0.1"
     port: int = 8000

@@ -1,7 +1,7 @@
 import asyncio
 import datetime
 import logging
-from typing import Any, NamedTuple, Optional, Union
+from typing import Any, NamedTuple, Optional
 
 from pymitter import EventEmitter
 from sse_starlette import ServerSentEvent
@@ -88,6 +88,11 @@ class MessageAnnouncer:
     def announce(self, sse: ServerSentEvent):
         """
         Push a new server-sent event to all subscribed clients
+
+        Parameters
+        ----------
+        sse : ServerSentEvent
+            The server-sent event to send
         """
         now = datetime.datetime.now(datetime.timezone.utc)
         sse.id = make_snowflake(int(now.timestamp()), 1, 1, 1, self._id_epoch)
@@ -110,6 +115,10 @@ class MessageAnnouncer:
         self.recent_events.append(SentEvent(now, sse))
 
     def clean_up_recent_events(self):
+        """
+        Remove recently-sent server-side events from history that are older than
+        15 minutes
+        """
         dt = datetime.datetime.now(datetime.timezone.utc)
         self.recent_events = list(
             filter(
@@ -118,9 +127,14 @@ class MessageAnnouncer:
             )
         )
 
-    def get_recent_events(self, last_id: int) -> list[dict]:
+    def get_recent_events(self, last_id: int) -> list[SentEvent]:
         """
         Retrieve the most recently-sent events, oldest first, from the given ID onwards
+
+        Parameters
+        ----------
+        last_id : int
+            The snowflake ID of the last received tweet
         """
         self.clean_up_recent_events()
         return [

@@ -17,6 +17,11 @@ _logger = logging.getLogger(__name__)
 
 
 class StreamClient(AsyncStreamingClient):
+    """
+    A Twitter API v2 filtered stream client that listens for new tweets as soon as they
+    are published and passes those tweets to stream response processors
+    """
+
     _ee = SingletonEventEmitter()
     running = False
 

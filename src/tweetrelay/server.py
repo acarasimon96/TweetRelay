@@ -30,6 +30,13 @@ _logger = logging.getLogger(__name__)
 
 
 class TweetRelay(Starlette):
+    """
+    This class manages dependencies between the Twitter API stream client (which
+    listens for new tweets in realtime), stream response processors (which processes a
+    tweet every time one is received), and the message announcer (which is responsible
+    for sending server-sent events to all connected clients)
+    """
+
     announcer = MessageAnnouncer()
     stream_client: StreamClient
 
@@ -139,6 +146,11 @@ class TweetRelay(Starlette):
     async def stream(self, request: Request):
         """
         The main endpoint for pushing server-sent events to a client
+
+        Parameters
+        ----------
+        request: Request
+            An incoming request from a connected client
         """
         return EventSourceResponse(
             self.event_generator(self.announcer, request), ping=20
