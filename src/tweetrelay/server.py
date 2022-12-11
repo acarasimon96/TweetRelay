@@ -11,6 +11,7 @@ from typing import (
     Mapping,
     Optional,
     Sequence,
+    Type,
     Union,
 )
 
@@ -45,6 +46,7 @@ class TweetRelay(Starlette):
         processors: Sequence[BaseProcessor],
         expansions_fields: Optional[dict] = None,
         settings: Optional[Settings] = None,
+        stream_client_cls: Type = StreamClient,
         debug: bool = False,
         middleware: Optional[Sequence[Middleware]] = None,
         exception_handlers: Optional[
@@ -73,9 +75,10 @@ class TweetRelay(Starlette):
 
         if settings is None:
             settings = get_settings()
-
-        # TODO: check if passed stream client class is subclass of StreamClient
-        self.stream_client = StreamClient(
+        assert isinstance(stream_client_cls, type) and issubclass(
+            stream_client_cls, StreamClient
+        ), "stream_client_cls must be of type StreamClient or a subclass of it"
+        self.stream_client = stream_client_cls(
             settings.bearer_token, processors, expansions_fields or {}
         )
 
