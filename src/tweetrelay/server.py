@@ -92,10 +92,6 @@ class TweetRelay(Starlette):
             await self.stream_client.task
 
     @staticmethod
-    def ping_factory():
-        return make_sse(datetime.utcnow(), event="ping")
-
-    @staticmethod
     async def event_generator(announcer: MessageAnnouncer, request: Request):
         sse_queue = announcer.listen()
         ip = ip_address(request.client.host)
@@ -145,7 +141,5 @@ class TweetRelay(Starlette):
         The main endpoint for pushing server-sent events to a client
         """
         return EventSourceResponse(
-            self.event_generator(self.announcer, request),
-            ping=20,
-            ping_message_factory=self.ping_factory,
+            self.event_generator(self.announcer, request), ping=20
         )
