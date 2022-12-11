@@ -31,3 +31,4 @@ balanced_wrapping = true
 combine_star = true
 py_version = '3'
 skip_glob = ['env/*', 'venv/*', 'ENV/*']
+known_local_folder = ['snowflake']
