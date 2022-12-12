@@ -8,9 +8,19 @@ description = "A framework for relaying Twitter streams via server-sent events"
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python ",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Application Frameworks"
 ]
 dependencies = [
   "starlette>=0.22.0<2",
@@ -20,6 +30,10 @@ dependencies = [
   "pymitter",
   "python-dotenv",
 ]
+
+[project.urls]
+"Homepage" = "https://github.com/acarasimon96/TweetRelay"
+"Bug Tracker" = "https://github.com/acarasimon96/TweetRelay/issues"
 
 [tool.black]
 target-version = ['py37']
