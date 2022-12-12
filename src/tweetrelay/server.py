@@ -22,6 +22,7 @@ from starlette.requests import Request
 from starlette.responses import Response
 from starlette.routing import Route
 
+from snowflake import TWEPOCH
 from .event import MessageAnnouncer, make_sse
 from .processor import BaseProcessor
 from .settings import Settings, get_settings
@@ -38,7 +39,6 @@ class TweetRelay(Starlette):
     for sending server-sent events to all connected clients)
     """
 
-    announcer = MessageAnnouncer()
     stream_client: StreamClient
 
     def __init__(
@@ -47,6 +47,8 @@ class TweetRelay(Starlette):
         expansions_fields: Optional[dict] = None,
         settings: Optional[Settings] = None,
         stream_client_cls: Type = StreamClient,
+        sse_id_epoch: int = TWEPOCH,
+        max_event_age: int = 15,
         debug: bool = False,
         middleware: Optional[Sequence[Middleware]] = None,
         exception_handlers: Optional[
@@ -72,6 +74,8 @@ class TweetRelay(Starlette):
             on_shutdown,
             lifespan,
         )
+
+        self.announcer = MessageAnnouncer(max_event_age, sse_id_epoch)
 
         if settings is None:
             settings = get_settings()

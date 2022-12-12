@@ -72,10 +72,12 @@ def make_sse(
 class MessageAnnouncer:
     _ee = SingletonEventEmitter()
 
-    def __init__(self, epoch: int = TWEPOCH):
+    def __init__(self, max_event_age: int = 15, epoch: int = TWEPOCH):
         self.listeners: list[asyncio.Queue] = []
         self.recent_events: list[SentEvent] = []
+        self.max_event_age = max_event_age
         self._id_epoch = epoch
+
         self._ee.on("announce-sse", self.announce)
 
         settings: Settings = get_settings()
@@ -168,13 +170,16 @@ class MessageAnnouncer:
 
     def clean_up_recent_events(self):
         """
-        Remove recently-sent server-side events from history that are older than
-        15 minutes
+        Remove recently-sent server-side events from history that are older than the
+        number of minutes specified in `max_event_age`.
+
+        By default, events from more than 15 minutes ago will be purged.
         """
         dt = datetime.datetime.now(datetime.timezone.utc)
         self.recent_events = list(
             filter(
-                lambda e: dt - e.timestamp <= datetime.timedelta(minutes=15),
+                lambda e: dt - e.timestamp
+                <= datetime.timedelta(minutes=self.max_event_age),
                 self.recent_events,
             )
         )
