@@ -1,7 +1,6 @@
 import asyncio
 import json
 import logging
-from datetime import datetime
 from ipaddress import ip_address
 from typing import (
     Any,
@@ -22,11 +21,11 @@ from starlette.requests import Request
 from starlette.responses import Response
 from starlette.routing import Route
 
-from snowflake import TWEPOCH
 from .event import MessageAnnouncer, make_sse
 from .processor import BaseProcessor
 from .settings import Settings, get_settings
 from .stream import StreamClient
+from snowflake import TWEPOCH
 
 _logger = logging.getLogger(__name__)
 
