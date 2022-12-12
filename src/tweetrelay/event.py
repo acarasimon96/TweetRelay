@@ -90,7 +90,10 @@ class MessageAnnouncer:
                     data: list[dict] = json.load(f)
                     for event in data:
                         sse = ServerSentEvent(**event["sse_data"])
-                        self.recent_events.append(SentEvent(event["timestamp"], sse))
+                        timestamp_dt = datetime.datetime.fromtimestamp(
+                            event["timestamp"], datetime.timezone.utc
+                        )
+                        self.recent_events.append(SentEvent(timestamp_dt, sse))
                 except Exception:  # noqa: PIE786
                     _logger.exception("Failed to read %s", self.recent_events_file)
         event_count = len(self.recent_events)
