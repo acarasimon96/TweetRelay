@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     host: str = "127.0.0.1"
     port: int = 8000
     logfile_level: str = "DEBUG"
+    recent_events_file: str = "recent_events.json"
 
     @validator("logfile_level")
     def log_level_is_valid(cls, value: str):

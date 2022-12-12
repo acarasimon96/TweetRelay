@@ -1,11 +1,14 @@
 import asyncio
 import datetime
+import json
 import logging
+from os import path
 from typing import Any, NamedTuple, Optional
 
 from pymitter import EventEmitter
 from sse_starlette import ServerSentEvent
 
+from .settings import Settings, get_settings
 from snowflake import TWEPOCH, make_snowflake
 
 SSE_EVENT_NAME = "announce-sse"
@@ -23,7 +26,6 @@ class SingletonEventEmitter(EventEmitter):
         return cls.__instance
 
 
-# TODO: might need to rename this with more concise wording
 class SentEvent(NamedTuple):
     timestamp: datetime.datetime
     event: ServerSentEvent
@@ -76,6 +78,28 @@ class MessageAnnouncer:
         self._id_epoch = epoch
         self._ee.on("announce-sse", self.announce)
 
+        settings: Settings = get_settings()
+        self.recent_events_file: str = settings.recent_events_file
+
+        # Load recent events from file
+        if path.exists(self.recent_events_file):
+            with open(self.recent_events_file) as f:
+                try:
+                    data: list[dict] = json.load(f)
+                    for event in data:
+                        sse = ServerSentEvent(**event["sse_data"])
+                        self.recent_events.append(SentEvent(event["timestamp"], sse))
+                except Exception:  # noqa: PIE786
+                    _logger.exception("Failed to read %s", self.recent_events_file)
+        event_count = len(self.recent_events)
+        if event_count > 0:
+            _logger.debug(
+                "Loaded %s recently-sent event%s from %s",
+                event_count,
+                "s" if event_count != 1 else "",
+                self.recent_events_file,
+            )
+
     def listen(self) -> asyncio.Queue:
         """
         Subscribe to events sent by the `MessageAnnouncer` instance
@@ -84,6 +108,33 @@ class MessageAnnouncer:
         msg_q = asyncio.Queue(maxsize=10)
         self.listeners.append(msg_q)
         return msg_q
+
+    def save_recent_events(self):
+        """
+        Saves a list of recently-sent server-side events to a file for later use.
+
+        The path name of the target file is specified in your application's settings file.
+        """
+
+        event_dict_list_temp: list[dict] = []
+        for event in self.recent_events:
+            timestamp, sse = event
+            event_dict_list_temp.append(
+                {
+                    "timestamp": timestamp.timestamp(),
+                    "sse_data": {
+                        "id": sse.id,
+                        "event": sse.event,
+                        "data": sse.data,
+                        "retry": sse.retry,
+                        "comment": sse.comment,
+                    },
+                }
+            )
+
+        with open(self.recent_events_file, "w") as f:
+            f.write(json.dumps(event_dict_list_temp))
+            _logger.debug("Recent events saved to %s", self.recent_events_file)
 
     def announce(self, sse: ServerSentEvent):
         """
@@ -113,6 +164,7 @@ class MessageAnnouncer:
             },
         )
         self.recent_events.append(SentEvent(now, sse))
+        self.save_recent_events()
 
     def clean_up_recent_events(self):
         """
