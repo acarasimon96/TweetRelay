@@ -48,6 +48,7 @@ class TweetRelay(Starlette):
         stream_client_cls: Type = StreamClient,
         sse_id_epoch: int = TWEPOCH,
         max_event_age: int = 15,
+        ping_factory: Optional[Callable[..., ServerSentEvent]] = None,
         debug: bool = False,
         middleware: Optional[Sequence[Middleware]] = None,
         exception_handlers: Optional[
@@ -75,6 +76,7 @@ class TweetRelay(Starlette):
         )
 
         self.announcer = MessageAnnouncer(max_event_age, sse_id_epoch)
+        self._ping_factory = ping_factory
 
         if settings is None:
             settings = get_settings()
@@ -159,5 +161,7 @@ class TweetRelay(Starlette):
             An incoming request from a connected client
         """
         return EventSourceResponse(
-            self.event_generator(self.announcer, request), ping=20
+            self.event_generator(self.announcer, request),
+            ping=20,
+            ping_message_factory=self._ping_factory,
         )
