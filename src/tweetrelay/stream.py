@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import sys
-import time
 from typing import Iterable, Sequence
 
 import aiohttp
@@ -58,7 +57,6 @@ class StreamClient(AsyncStreamingClient):
 
     async def on_keep_alive(self):
         _logger.log(TRACE_LOG_LEVEL, "Received keep-alive signal")
-        self.last_keep_alive_time = time.time()
 
     async def on_request_error(self, status_code):
         _logger.error(
