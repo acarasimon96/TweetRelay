@@ -1,6 +1,6 @@
 [project]
 name = "tweetrelay"
-version = "0.2.1"
+version = "0.3.0"
 authors = [
   { name="Timothy Bautista", email="acarasimon96@pm.me" },
 ]
