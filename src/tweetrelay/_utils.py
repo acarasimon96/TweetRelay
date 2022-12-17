@@ -1,6 +1,8 @@
+from typing import Tuple
+
 from tweepy import __version__ as _tweepy_ver
 
-_TWEEPY_VER_TUPLE: tuple[int] = tuple(int(n) for n in _tweepy_ver.split(".", 3))
+_TWEEPY_VER_TUPLE: Tuple[int] = tuple(int(n) for n in _tweepy_ver.split(".", 3))
 
 
 def tweepy_ver_before(required_version: str):

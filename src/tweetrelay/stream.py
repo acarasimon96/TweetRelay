@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import sys
-from typing import Iterable, Sequence
+from typing import Dict, Iterable, Sequence
 
 import aiohttp
 from tweepy import StreamResponse
@@ -28,7 +28,7 @@ class StreamClient(AsyncStreamingClient):
         self,
         bearer_token: str,
         processors: Sequence[BaseProcessor],
-        expansions_fields: dict[str, Iterable[str]],
+        expansions_fields: Dict[str, Iterable[str]],
         *args,
         **kwargs,
     ):

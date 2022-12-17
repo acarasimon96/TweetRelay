@@ -3,7 +3,7 @@ import datetime
 import json
 import logging
 from os import path
-from typing import Any, NamedTuple, Optional
+from typing import Any, List, NamedTuple, Optional
 
 from pymitter import EventEmitter
 from sse_starlette import ServerSentEvent
@@ -187,7 +187,7 @@ class MessageAnnouncer:
             )
         )
 
-    def get_recent_events(self, last_id: int) -> list[SentEvent]:
+    def get_recent_events(self, last_id: int) -> List[SentEvent]:
         """
         Retrieve the most recently-sent events, oldest first, from the given ID onwards
 
