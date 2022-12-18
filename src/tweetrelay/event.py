@@ -77,6 +77,8 @@ class MessageAnnouncer:
         self.recent_events: list[SentEvent] = []
         self.max_event_age = max_event_age
         self._id_epoch = epoch
+        self._last_snowflake_ms = 0
+        self._sequence_id = 0
 
         self._ee.on("announce-sse", self.announce)
 
@@ -151,7 +153,12 @@ class MessageAnnouncer:
             The server-sent event to send
         """
         now = datetime.datetime.now(datetime.timezone.utc)
-        sse.id = make_snowflake(int(now.timestamp()), 1, 1, 1, self._id_epoch)
+        timestamp_ms = int(now.timestamp() * 1000)
+        if timestamp_ms != self._last_snowflake_ms:
+            self._last_snowflake_ms = timestamp_ms
+            self._sequence_id = 0
+        sse.id = make_snowflake(timestamp_ms, 1, 1, self._sequence_id, self._id_epoch)
+        self._sequence_id += 1
 
         for i in range(len(self.listeners) - 1, -1, -1):
             try:
