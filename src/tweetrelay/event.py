@@ -8,6 +8,7 @@ from typing import Any, List, NamedTuple, Optional
 from pymitter import EventEmitter
 from sse_starlette import ServerSentEvent
 
+from .event import make_sse
 from .settings import Settings, get_settings
 from snowflake import TWEPOCH, make_snowflake
 
@@ -91,7 +92,7 @@ class MessageAnnouncer:
                 try:
                     data: list[dict] = json.load(f)
                     for event in data:
-                        sse = ServerSentEvent(**event["sse_data"])
+                        sse = make_sse(**event["sse_data"])
                         timestamp_dt = datetime.datetime.fromtimestamp(
                             event["timestamp"], datetime.timezone.utc
                         )
