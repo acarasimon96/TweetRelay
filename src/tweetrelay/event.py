@@ -8,7 +8,6 @@ from typing import Any, List, NamedTuple, Optional
 from pymitter import EventEmitter
 from sse_starlette import ServerSentEvent
 
-from .event import make_sse
 from .settings import Settings, get_settings
 from snowflake import TWEPOCH, make_snowflake
 
